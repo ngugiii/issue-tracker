@@ -1,83 +1,90 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
-import { getSession } from "next-auth/react";
+// import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { getSession, useSession } from "next-auth/react";
 
 const page = () => {
   const router = useRouter();
+
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // const handleSubmit = async (e: any) => {
-  //   e.preventDefault();
-  //   try {
-  //     const { data } = await axios.post("/api/login", {
-  //       email,
-  //       password,
-  //     });
-  //     console.log(data);
-  //     toast.success("Login Successfull!");
-  //     router.push("/");
-  //   } catch (error) {
-  //     toast.error("Error Logging In");
-  //   }
-  // };
+  const [cPassword, setCPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (password !== cPassword) {
+      toast.error("Passwords do not Match");
+    }
     try {
-      const res = await signIn("credentials", {
+      const response = await axios.post("/api/register", {
+        userName,
         email,
         password,
-        redirect:false
       });
-      if(res?.error){
-        toast.error("Invalid Login Attempt");
-      }
-      else if(!res?.error){
-        console.log(res);
-        const session = await getSession();
-        console.log(session);
-        
-        toast.success("Login Successfull!");
-        router.push("/dashboard");
-      }
+      toast.success(
+        "Account Created Succesfully, Enter your details to log in"
+      );
+      router.push("/");
     } catch (error) {
-      toast.error("Error Logging In");
+      toast.error("Problem creating Account");
     }
   };
+
   return (
     <div className="flex justify-center items-center h-[80vh] w-full">
       <div className="shadow-lg p-5 md:w-[30%] w-[90%] rounded-lg border-t-4 border-gray-800">
         <h1 className="text-xl font-bold my-4 text-center">
-          Sign In to your account
+          Create a new account
         </h1>
-        <form onSubmit={handleSubmit} action="" className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <input
+            type="text"
+            name=""
+            id=""
+            placeholder="Enter your User name"
+            className="w-full border border-gray-200 px-6 py-2 rounded-md bg-zinc-200 text-gray-900"
+            onChange={(e) => setUserName(e.target.value)}
+            required
+          />
           <input
             type="email"
             name=""
+            id=""
             placeholder="Enter your email"
             className="w-full border border-gray-200 px-6 py-2 rounded-md bg-zinc-200 text-gray-900"
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             type="password"
             name=""
             placeholder="Enter your Password"
+            id=""
             className="w-full border border-gray-200 px-6 py-2 rounded-md bg-zinc-200 text-gray-900"
             onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            name=""
+            placeholder="Confirm your Password"
+            id=""
+            className="w-full border border-gray-200 px-6 py-2 rounded-md bg-zinc-200 text-gray-900"
+            onChange={(e) => setCPassword(e.target.value)}
+            required
           />
           <button className="w-full bg-gray-800 text-white px-2 py-1 rounded-md">
-            Login
+            Register
           </button>
           {/* <div className="bg-red-500 text-white w-fit text-sm rounded-md mt-2 p-1">Error Message</div> */}
-          <Link className="text-sm" href={"/signup"}>
-            Don't have an account? <span className="underline">Register</span>
+          <Link className="text-sm" href={"/"}>
+            Already have an account? <span className="underline">Login</span>
           </Link>
         </form>
       </div>
