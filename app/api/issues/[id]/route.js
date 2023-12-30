@@ -25,39 +25,37 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request,
-  { params }
-) {
-  const id = params.id;
-
-  if (!id || typeof id !== "string") {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  try {
-    const body = await request.json();
-
-    if (!body) {
-      return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+export async function PUT(request, { params }) {
+    const id = params.id;
+  
+    if (!id || typeof id !== "string") {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
-
-    const { assigned, status } = body;
-
-    const updatedIssue = await prisma.issue.update({
-      where: { id },
-      data: {
-        // assigned,
-        status,
-      },
-    });
-
-    return NextResponse.json(updatedIssue, { status: 200 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Issue update failed" }, { status: 500 });
+  
+    try {
+      const body = await request.json();
+  
+      if (!body) {
+        return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+      }
+  
+      const { assignedUserId, status } = body;
+  
+      const updatedIssue = await prisma.issue.update({
+        where: { id },
+        data: {
+          assigned: { connect: { id: assignedUserId } },
+          status,
+        },
+      });
+  
+      return NextResponse.json(updatedIssue, { status: 200 });
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ error: "Issue update failed" }, { status: 500 });
+    }
   }
-}
+  
 
 export async function DELETE(
   request,

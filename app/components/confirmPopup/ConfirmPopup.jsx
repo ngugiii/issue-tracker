@@ -10,9 +10,8 @@ const ConfirmPopup = ({
   onCancel,
 }) => {
   return (
-    <div className='fixed top-[-1.5rem] left-0 w-screen h-full bg-black bg-opacity-20  flex justify-center items-center z-50'>
+    <div className="fixed inset-0 top-[-1.25rem] flex items-center justify-center bg-black bg-opacity-50">
       <div className="additional-info fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[10rem] px-3 py-1 w-[24rem] bg-gray-100 border-orangered-2px rounded-lg">
-
         <div className="p-2 flex flex-col justify-between">
           <div className="text mb-4">
             <h1 className='font-bold text-xl mb-2'>{title}</h1>

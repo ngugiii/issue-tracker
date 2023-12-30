@@ -95,9 +95,9 @@ const page = () => {
     },
   };
   return (
-    <div className="px-24 flex w-full">
+    <div className="md:px-24 px-4 flex md:flex-row flex-col w-full">
       <div className="w-full">
-        <div className="flex justify-start mb-4">
+        <div className="flex md:justify-start justify-center mb-4">
           {Object.keys(groupedIssues).map((key) => (
             <div
               key={key}
@@ -112,8 +112,8 @@ const page = () => {
           <BarChart chartOptions={chartOptions} chartData={chartData} />
         </div>
       </div>
-      <div className="ml-8 w-[50%] shadow-lg p-4 rounded-lg">
-        <h1 className="text-xl flex items-center mb-2 text-[orangered]">
+      <div className="md:ml-8 md:w-[50%] w-full shadow-lg p-4 rounded-lg">
+        <h1 className="md:text-xl md:font-semibold flex items-center mb-2 text-[orangered]">
           Latest Issues
           <span className=" font-normal text-sm text-black ml-1">
             {" "}
@@ -140,7 +140,7 @@ const page = () => {
             </div>
           ))
         ) : (
-          <div>No Issues Registered Today</div>
+          <div className="w-full flex justify-center items-center">No Issues Registered Today</div>
         )}
       </div>
     </div>

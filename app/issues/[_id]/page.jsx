@@ -20,6 +20,23 @@ const page = () => {
   const [editedAssignedStatus, setEditedAssignedStatus] = useState("");
   const [selectedIssueId, setSelectedIssueId] = useState("");
   const [popupState, setPopupState] = useState({});
+  const [users, setUsers] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("/api/users");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  console.log(users);
 
   const togglePopup = (sessionId) => {
     setPopupState((prevState) => ({
@@ -27,23 +44,44 @@ const page = () => {
       [sessionId]: !prevState[sessionId] || false,
     }));
   };
+  console.log(id);
 
   const getIssueDetails = async () => {
     try {
-      const { data }= await axios.get(
-        `/api/issues/${id}`
-      );
+      const { data } = await axios.get(`/api/issues/${id}`);
       setIssue(data);
+      setEditedIssueStatus(data.status);
+    setEditedAssignedStatus(data.userId || "");
     } catch (error) {
       // toast.error("Error Fetching Issues");
       console.log(error);
-      
     }
   };
 
   useEffect(() => {
     getIssueDetails();
   }, []);
+
+  console.log(issue);
+  if(issue){
+  console.log(issue.userId);
+  }
+
+  const getUserDetails = async () => {
+    try {
+        const { data } = await axios.get(`/api/users/${issue.userId}`);
+        setUserDetails(data);
+    } catch (error) {
+      console.error("Error Fetching User Details:", error);
+      setUserDetails({}); // Set userDetails to an empty object in case of an error
+    }
+  };
+
+  useEffect(() => {
+    getUserDetails();
+  }, [issue]);
+
+  console.log(userDetails);
 
   const handleEditStatus = (IssueId) => {
     setSelectedIssueId(IssueId);
@@ -65,15 +103,13 @@ const page = () => {
 
       const updateObject = {
         status: editedIssueStatus || issue.status,
-        // assigned: editedAssignedStatus || issue.assigned,
+        assignedUserId: editedAssignedStatus || issue.assigned,
       };
       console.log(updateObject);
 
       await axios.put(`/api/issues/${id}`, updateObject);
 
-      const { data }= await axios.get(
-        `/api/issues/${id}`
-      );
+      const { data } = await axios.get(`/api/issues/${id}`);
       setIssue(data);
       handleModalClose();
       toast.success("Statuses updated successfully.");
@@ -87,7 +123,7 @@ const page = () => {
     try {
       await axios.delete(`/api/issues/${issueId}`);
       toast.success("Issue deleted successfully.");
-      router.push("/issues")
+      router.push("/issues");
       getIssueDetails();
     } catch (error) {
       toast.error("Failed to delete Issue.");
@@ -123,10 +159,10 @@ const page = () => {
           )}
         </div>
         <div className="issue-right space-y-5 flex flex-col justify-center items-center w-[30%]">
-          <select name="" id="" className="border rounded w-[50%] p-2">
-            <option value="unassigned">Unassigned</option>
-            <option value="assigned">Assigned</option>
-          </select>
+        {issue && issue.userId && userDetails && userDetails.userName && (
+    <span className="border-2 rounded p-2">Assigned to <span className="text-[orangered] font-semibold">{userDetails.userName}</span></span>
+  )}
+  {issue &&  !issue.userId && <span className="p-2 border-2 border-gray-400 rounded-md">Not yet assigned</span>}
           {issue && (
             <button
               className="flex justify-center items-center text-white rounded-md px-2 py-1 cursor-pointer bg-[#eb6e41] hover:bg-[orangered] w-[50%]"
@@ -136,9 +172,14 @@ const page = () => {
               Edit Issue
             </button>
           )}{" "}
-        {issue && (<button className=" text-white rounded-md px-2 py-1 cursor-pointer bg-red-500 hover:bg-red-600 w-[50%]" onClick={()=>togglePopup(issue?.id)}>
-            Delete Issue
-          </button>)}  
+          {issue && (
+            <button
+              className=" text-white rounded-md px-2 py-1 cursor-pointer bg-red-500 hover:bg-red-600 w-[50%]"
+              onClick={() => togglePopup(issue?.id)}
+            >
+              Delete Issue
+            </button>
+          )}
           {popupState[issue?.id || ""] && (
             <ConfirmPopup
               title="Delete Issue"
@@ -154,8 +195,8 @@ const page = () => {
       {/* Edit Modal */}
       {editModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-12 rounded-md">
-            <h3 className="text-lg font-semibold mb-4">Edit Statuses</h3>
+          <div className="bg-white w-[40%] p-12 rounded-md">
+            <h3 className="text-lg font-semibold mb-4 text-[orangered]">Edit Statuses</h3>
             <div className="mb-4">
               <label className="block text-gray-600 font-semibold mb-2">
                 Issue Status
@@ -173,18 +214,19 @@ const page = () => {
             </div>
             <div className="mb-4">
               <label className="block text-gray-600 font-semibold mb-2">
-                Assigned Status
+                Assign Issue
               </label>
               <select
                 value={editedAssignedStatus}
                 onChange={(e) => setEditedAssignedStatus(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2"
               >
-                {/* Add delivery status options as needed */}
-                <option value="">Select Status</option>
-                <option value="assigned">Assigned</option>
-                <option value="unassigned">Unassigned</option>
-                {/* <option value="Processing">Processing</option> */}
+                <option value="">Select User</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.userName}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex justify-end">
