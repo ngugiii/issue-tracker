@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import BarChart from "../charts/Barchart";
 import axios from "axios";
 import classNames from "classnames";
 import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Loader from "../components/loader/Loader";
+import BarChart from "app/charts/BarChart";
 
 const Page = () => {
   const [issues, setIssues] = useState([]);
