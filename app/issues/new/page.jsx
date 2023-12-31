@@ -1,11 +1,14 @@
 "use client";
-import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { Controller, useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Loader from "@/app/components/loader/Loader";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 const Page = () => {
   const [isLoading, setIsLoading] = useState(false);
