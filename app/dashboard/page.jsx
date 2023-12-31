@@ -5,7 +5,7 @@ import classNames from "classnames";
 import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Loader from "../components/loader/Loader";
-import BarChart from "app/charts/BarChart";
+import BarChart from "../components/charts/BarChart";
 
 const Page = () => {
   const [issues, setIssues] = useState([]);

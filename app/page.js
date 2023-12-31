@@ -103,7 +103,7 @@ const Page = () => {
             </button>
             {/* <div className="bg-red-500 text-white w-fit text-sm rounded-md mt-2 p-1">Error Message</div> */}
             <Link className="text-sm" href={"/signup"}>
-              Do not have an account?&apos;<span className="underline">Register</span>
+              Don&apos;t have an account? <span className="underline">Register</span>
             </Link>
           </form>
         </div>
