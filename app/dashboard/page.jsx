@@ -123,7 +123,7 @@ const Page = () => {
         </h1>
         {todayIssues.length > 0 ? (
           todayIssues.map((issue) => (
-            <div className="mb-3 p-2 border-b flex flex-col">
+            <div key={issue.id} className="mb-3 p-2 border-b flex flex-col">
                 <Link href={`issues/${issue.id}`} className=" hover:text-blue-700 hover:underline">
             {issue.title}
               </Link>
