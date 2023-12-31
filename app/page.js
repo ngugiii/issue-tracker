@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import Loader from "./components/loader/Loader";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -112,4 +112,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

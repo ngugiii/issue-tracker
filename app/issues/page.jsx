@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { format } from "date-fns";
 import Loader from "../components/loader/Loader";
 
-const page = () => {
+const Page = () => {
   const [issues, setIssues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filteredCategory, setFilteredCategory] = useState("all");
@@ -95,4 +95,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

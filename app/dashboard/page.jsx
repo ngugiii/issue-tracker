@@ -7,7 +7,7 @@ import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Loader from "../components/loader/Loader";
 
-const page = () => {
+const Page = () => {
   const [issues, setIssues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -149,4 +149,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

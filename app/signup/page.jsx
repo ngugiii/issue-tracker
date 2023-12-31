@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 import { getSession, useSession } from "next-auth/react";
 import Loader from "../components/loader/Loader";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState("");
@@ -100,4 +100,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

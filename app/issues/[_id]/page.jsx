@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import ConfirmPopup from "@/app/components/confirmPopup/ConfirmPopup";
 import Loader from "@/app/components/loader/Loader";
 
-const page = () => {
+const Page = () => {
   const [issue, setIssue] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
@@ -257,4 +257,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

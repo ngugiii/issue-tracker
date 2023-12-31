@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import ConfirmPopup from "@/app/components/confirmPopup/ConfirmPopup";
 import Loader from "@/app/components/loader/Loader";
 
-const page = () => {
+const Page = () => {
   const [userIssues, setUserIssues] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editedIssueStatus, setEditedIssueStatus] = useState("");
@@ -259,4 +259,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
