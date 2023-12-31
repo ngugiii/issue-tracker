@@ -7,19 +7,22 @@ import { toast } from "react-toastify";
 // import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { getSession, useSession } from "next-auth/react";
+import Loader from "../components/loader/Loader";
 
 const page = () => {
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     if (password !== cPassword) {
       toast.error("Passwords do not Match");
+      setIsLoading(false);
     }
     try {
       const response = await axios.post("/api/register", {
@@ -30,13 +33,17 @@ const page = () => {
       toast.success(
         "Account Created Succesfully, Enter your details to log in"
       );
+      setIsLoading(false);
       router.push("/");
     } catch (error) {
       toast.error("Problem creating Account");
+      setIsLoading(false);
     }
   };
 
   return (
+    <>
+    {isLoading && <Loader/>}
     <div className="flex justify-center items-center h-[80vh] w-full">
       <div className="shadow-lg p-5 md:w-[30%] w-[90%] rounded-lg border-t-4 border-gray-800">
         <h1 className="text-xl font-bold my-4 text-center">
@@ -89,6 +96,7 @@ const page = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 

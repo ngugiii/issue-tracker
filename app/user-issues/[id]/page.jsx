@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { FiEdit } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import ConfirmPopup from "@/app/components/confirmPopup/ConfirmPopup";
+import Loader from "@/app/components/loader/Loader";
 
 const page = () => {
   const [userIssues, setUserIssues] = useState(null);
@@ -17,6 +18,7 @@ const page = () => {
   const [selectedIssueId, setSelectedIssueId] = useState("");
   const [popupState, setPopupState] = useState({});
   const [filteredCategory, setFilteredCategory] = useState("all");
+  const [isLoading, setIsLoading] = useState(false);
 
   const filteredIssues =
     filteredCategory === "all"
@@ -26,11 +28,14 @@ const page = () => {
   const params = useParams();
   const userId = params.id;
   const getIssues = async () => {
+    setIsLoading(true);
     try {
       const { data } = await axios.get(`/api/user-issues/${userId}`);
       setUserIssues(data);
+      setIsLoading(false);
     } catch (error) {
       toast.error("Error Loading Issues");
+      setIsLoading(false);
     }
   };
 
@@ -51,6 +56,7 @@ const page = () => {
   };
 
   const handleSaveChanges = async () => {
+    setIsLoading(true);
     try {
       const updateObject = {
         status: editedIssueStatus,
@@ -63,14 +69,17 @@ const page = () => {
       getIssues();
       handleModalClose();
       toast.success("Statuses updated successfully.");
+      setIsLoading(false);
     } catch (error) {
       toast.error("Failed to update statuses.");
       console.error(error);
+      setIsLoading(false);
     }
   };
 
   return (
     <>
+      {isLoading && <Loader />}
       {filteredIssues && filteredIssues.length > 0 ? (
         <div className="w-full md:px-10 px-3 py-2">
           <div className="flex justify-start items-center mb-2">

@@ -8,9 +8,11 @@ import { format } from "date-fns";
 import { FiEdit } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import ConfirmPopup from "@/app/components/confirmPopup/ConfirmPopup";
+import Loader from "@/app/components/loader/Loader";
 
 const page = () => {
   const [issue, setIssue] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const id = params._id;
   const router = useRouter();
@@ -24,19 +26,20 @@ const page = () => {
   const [userDetails, setUserDetails] = useState([]);
 
   const fetchUsers = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get("/api/users");
       setUsers(response.data);
+    setIsLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
+    setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
-
-  console.log(users);
 
   const togglePopup = (sessionId) => {
     setPopupState((prevState) => ({
@@ -47,14 +50,17 @@ const page = () => {
   console.log(id);
 
   const getIssueDetails = async () => {
+    setIsLoading(true);
     try {
       const { data } = await axios.get(`/api/issues/${id}`);
       setIssue(data);
       setEditedIssueStatus(data.status);
     setEditedAssignedStatus(data.userId || "");
+    setIsLoading(false);
     } catch (error) {
       // toast.error("Error Fetching Issues");
       console.log(error);
+    setIsLoading(false);
     }
   };
 
@@ -62,18 +68,16 @@ const page = () => {
     getIssueDetails();
   }, []);
 
-  console.log(issue);
-  if(issue){
-  console.log(issue.userId);
-  }
-
   const getUserDetails = async () => {
+    setIsLoading(true);
     try {
         const { data } = await axios.get(`/api/users/${issue.userId}`);
         setUserDetails(data);
+    setIsLoading(false);
     } catch (error) {
       console.error("Error Fetching User Details:", error);
-      setUserDetails({}); // Set userDetails to an empty object in case of an error
+      setUserDetails({});
+    setIsLoading(false);
     }
   };
 
@@ -95,6 +99,7 @@ const page = () => {
   };
 
   const handleSaveChanges = async () => {
+    setIsLoading(true);
     try {
       if (!issue) {
         toast.error("Issue details not available.");
@@ -108,31 +113,36 @@ const page = () => {
       console.log(updateObject);
 
       await axios.put(`/api/issues/${id}`, updateObject);
-
       const { data } = await axios.get(`/api/issues/${id}`);
       setIssue(data);
       handleModalClose();
       toast.success("Statuses updated successfully.");
+    setIsLoading(false);
     } catch (error) {
       toast.error("Failed to update statuses.");
       console.error(error);
+    setIsLoading(false);
     }
   };
 
   const handleDelete = async (issueId) => {
+    setIsLoading(true);
     try {
       await axios.delete(`/api/issues/${issueId}`);
       toast.success("Issue deleted successfully.");
       router.push("/issues");
+    setIsLoading(false);
       getIssueDetails();
     } catch (error) {
       toast.error("Failed to delete Issue.");
       console.error(error);
+    setIsLoading(false);
     }
   };
 
   return (
     <>
+    {isLoading && <Loader/>}
       <div className="full md:p-10 p-4 flex md:flex-row flex-col">
         <div className="issue-left md:space-y-4  md:w-[70%]">
           {issue && (

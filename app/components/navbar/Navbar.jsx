@@ -22,10 +22,20 @@ const Navbar = () => {
   const {data: session}=useSession();
   const userRole=session?.role;
 
+
   useEffect(() => {
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 800;
-  setIsMobile(isMobile)
-  }, [window.innerWidth])
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 800);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   
 
   if (session && userRole === "admin" && !isMobile) {

@@ -5,24 +5,27 @@ import axios from "axios";
 import classNames from "classnames";
 import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import Loader from "../components/loader/Loader";
 
 const page = () => {
   const [issues, setIssues] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getIssues = async () => {
+    setIsLoading(true);
     try {
       const { data } = await axios.get("/api/issues");
       setIssues(data);
+    setIsLoading(false)
     } catch (error) {
       console.log("Error fetching Issues");
+    setIsLoading(false)
     }
   };
 
   useEffect(() => {
     getIssues();
   }, []);
-
-  console.log(issues);
 
   const today = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD format
 
@@ -31,15 +34,11 @@ const page = () => {
     return issueDate === today; // Filter issues created today
   });
 
-  console.log(todayIssues);
-
   const groupedIssues = issues.reduce((acc, issue) => {
     const { status } = issue;
     acc[status] = acc[status] ? acc[status] + 1 : 1;
     return acc;
   }, {});
-
-  console.log(groupedIssues);
 
   const chartRef = useRef(null);
   const chartData = {
@@ -95,7 +94,9 @@ const page = () => {
     },
   };
   return (
-    <div className="md:px-24 px-4 flex md:flex-row flex-col w-full">
+    <>
+    {isLoading && <Loader/>}
+        <div className="md:px-24 px-4 flex md:flex-row flex-col w-full">
       <div className="w-full">
         <div className="flex md:justify-start justify-center mb-4">
           {Object.keys(groupedIssues).map((key) => (
@@ -144,6 +145,7 @@ const page = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
