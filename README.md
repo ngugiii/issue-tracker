@@ -11,7 +11,7 @@ The Issue Tracker app allows users to create, manage, and track issues within pr
 - **Issue Creation:** Users can create new issues with title, description, and status.
 - **Issue Management:** Edit, update, and assign issues to specific users.
 - **Status Tracking:** View issues based on their status (open, in progress, closed).
-- **User Roles:** Admin and user roles to manage and access different features.
+- **User Roles:** Admin and user roles to manage and access different features.(for Admin Login use Email: admin@gmail.com Password:Password@1)
 - **Dashboard:** Dashboard view to get an overview of issue status.
 
 ## Tech Stack
