@@ -5,6 +5,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Loader from "@/app/components/loader/Loader";
+import dynamic from "next/dynamic";
+
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
