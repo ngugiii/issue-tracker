@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import prisma from "@/prisma/client";
 import jwt from "jsonwebtoken";
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials"
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -24,13 +24,13 @@ export const authOptions = {
             },
           });
 
-          if (!user || !(await bcrypt.compare(password, user.password))) { 
+          if (!user || !(await bcrypt.compare(password, user.password))) {
             return null;
           }
 
-          let role = 'client';
-          if (user.email === 'admin@gmail.com') {
-            role = 'admin';
+          let role = "user";
+          if (user.email === "admin@gmail.com") {
+            role = "admin";
           }
 
           const accessToken = jwt.sign(
@@ -38,27 +38,25 @@ export const authOptions = {
               userId: user.id,
               email: user.email,
               userName: user.userName,
-              role,
+              role:role,
             },
             process.env.JWT_SECRET || "",
             { expiresIn: "1h" }
           );
 
-          // Generate refresh token
           const refreshToken = jwt.sign(
             { userId: user.id },
             process.env.REFRESH_TOKEN_SECRET || "",
             { expiresIn: "7d" }
           );
 
-          console.log(accessToken);
-
           return {
             ...user,
             accessToken,
             refreshToken,
+            userId: user.id,
+            role,
           };
-          
         } catch (error) {
           console.error(error);
           return null;
@@ -69,25 +67,25 @@ export const authOptions = {
   pages: {
     signIn: "/",
   },
-//   callbacks: {
-//     // async signIn({ user, account, profile, email, credentials }) {
-//     //   return true
-//     // },
-//     // async redirect({ url, baseUrl }) {
-//     //   return baseUrl
-//     // }
-//     async jwt({ token, user, session }) {
-//       console.log("jwt callback",{token,user,session});
-//       return token;
-      
-//     },
-//     async session({ session, user, token }) {
-//       console.log("session callback",{token,user,session});
-//       return session;
-
-//     },
-// },
+  callbacks: {
+    async session({ session, token, user }) {
+      session.userId = token.userId;
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      session.role = token.role;
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.userId = user.userId;
+        token.role = user.role;
+      }
+      return token;
+    },
+  },
 };
 
-const handler =  NextAuth(authOptions);
-export {handler as GET, handler as POST };
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

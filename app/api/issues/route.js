@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod";
 import prisma from "@/prisma/client";
+import { middleware } from "@/middleware";
+
 
 const createIssueSchema = z.object({
     title: z.string().min(1).max(255),
@@ -21,6 +23,7 @@ export async function POST(request){
 }
 
 export async function GET(request) {
+  // await middleware(request);
     const allIssues = await prisma.issue.findMany();
   
     return NextResponse.json(allIssues, { status: 200 });

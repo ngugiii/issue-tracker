@@ -38,7 +38,9 @@ export async function POST(request) {
           userName,
           email,
           password: hashedPassword,
-        },
+          assignedIssues: { 
+            create: [] 
+          }        },
       });
   
       return NextResponse.json(newUser, { status: 201 });

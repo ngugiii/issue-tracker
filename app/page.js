@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { getSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 const page = () => {
   const router = useRouter();
@@ -34,18 +35,29 @@ const page = () => {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect:false
+        redirect: false,
       });
-      if(res?.error){
+      if (res.status !== 200) {
         toast.error("Invalid Login Attempt");
-      }
-      else if(!res?.error){
-        console.log(res);
+      } else {
         const session = await getSession();
-        console.log(session);
-        
-        toast.success("Login Successfull!");
-        router.push("/dashboard");
+        const user = session.user;
+        const accessToken = session.accessToken;
+        const refreshToken = session.refreshToken;
+        const decoded = jwtDecode(accessToken);
+        const userRole = decoded.role;
+        const userId = session.userId;
+        if (session) {
+          if (userRole === "admin") {
+            toast.success("Login Successfull!");
+            router.push("/dashboard");
+          } else if (userRole === "user") {
+            router.push(`/user-issues/${userId}`);
+            toast.success("Login Successfull!");
+          } else {
+            toast.error("Unauthorized")
+          }
+        }
       }
     } catch (error) {
       toast.error("Error Logging In");

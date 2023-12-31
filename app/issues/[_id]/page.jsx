@@ -133,8 +133,8 @@ const page = () => {
 
   return (
     <>
-      <div className="full p-10 flex">
-        <div className="issue-left space-y-4  w-[70%]">
+      <div className="full md:p-10 p-4 flex md:flex-row flex-col">
+        <div className="issue-left md:space-y-4  md:w-[70%]">
           {issue && (
             <h1 className="text-2xl font-semibold font-serif">{issue.title}</h1>
           )}
@@ -155,10 +155,10 @@ const page = () => {
             </div>
           )}
           {issue && (
-            <div className="border-2 rounded-md p-4">{issue.description}</div>
+            <div className="border-2 md:mt-0 mt-4 rounded-md p-4">{issue.description}</div>
           )}
         </div>
-        <div className="issue-right space-y-5 flex flex-col justify-center items-center w-[30%]">
+        <div className="issue-right space-y-5 flex flex-col justify-center items-center md:w-[30%] md:mt-0 mt-8">
         {issue && issue.userId && userDetails && userDetails.userName && (
     <span className="border-2 rounded p-2">Assigned to <span className="text-[orangered] font-semibold">{userDetails.userName}</span></span>
   )}
@@ -195,7 +195,7 @@ const page = () => {
       {/* Edit Modal */}
       {editModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-[40%] p-12 rounded-md">
+          <div className="bg-white md:w-[40%] p-12 rounded-md">
             <h3 className="text-lg font-semibold mb-4 text-[orangered]">Edit Statuses</h3>
             <div className="mb-4">
               <label className="block text-gray-600 font-semibold mb-2">

@@ -8,7 +8,9 @@ import { format } from "date-fns";
 
 const page = () => {
   const [issues, setIssues] = useState([]);
+  const [filteredCategory, setFilteredCategory] = useState("all");
 
+  const filteredIssues= filteredCategory === "all" ? issues : issues.filter((issue)=>issue.status.includes(filteredCategory));
 
   const getIssues = async () => {
     try {
@@ -26,8 +28,15 @@ const page = () => {
 
   return (
     <>
-        <div className="px-12 space-y-6">
-      <div className="flex justify-end">
+        <div className="md:px-12 px-2 w-full space-y-6">
+      <div className="flex justify-between items-center">
+        <select name="" id="" className="border-2 border-gray-700 cursor-pointer p-1 rounded" onChange={(e) => setFilteredCategory(e.target.value)}
+>
+          <option value="all">All</option>
+          <option value="OPEN">Open</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="CLOSED">Closed</option>
+        </select>
         <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition-colors">
           <Link href="/issues/new">New Issue</Link>
         </button>
@@ -42,7 +51,7 @@ const page = () => {
             </tr>
           </thead>
           <tbody>
-            {issues.map((issue) => (
+            {filteredIssues.map((issue) => (
               <tr key={issue.id} className="">
                 <td className="border-b underline text-blue-500 cursor-pointer hover:text-blue-600 border-gray-200 rounded text-center p-2">
                   <Link href={`issues/${issue.id}`}>{issue.title}</Link>

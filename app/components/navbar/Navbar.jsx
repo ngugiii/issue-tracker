@@ -13,19 +13,29 @@ import { FiLogOut } from "react-icons/fi";
 
 const Navbar = () => {
   const [openUserPopup, setOpenUserPopup] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const links = [];
   const [userName, setUserName] = useState("");
   const router=useRouter();
   const currentPath = usePathname();
 
   const {data: session}=useSession();
+  const userRole=session?.role;
 
-  if (session) {
+  useEffect(() => {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 800;
+  setIsMobile(isMobile)
+  }, [window.innerWidth])
+  
+
+  if (session && userRole === "admin" && !isMobile) {
     links.push(
       { id: 1, href: "/dashboard", name: "Dashboard" },
       { id: 2, href: "/issues", name: "Issues" }
     );
   }
+
+
 
   const handlePopup = () => {
     setOpenUserPopup(!openUserPopup);
@@ -37,6 +47,7 @@ const Navbar = () => {
     setOpenUserPopup(false);
     setUserName("")
     toast.success("User Logged out");
+    sessionStorage.clear();
   };
 
   return (
@@ -63,13 +74,23 @@ const Navbar = () => {
           ))}
         </ul>
         {session && <FaUserCircle
-          size={24}
+          size={28}
           className="cursor-pointer"
           onClick={handlePopup}
         />}
         {openUserPopup && (
           <div className="absolute rounded border-2 p-2 top-[3.6rem] right-[1rem] flex flex-col bg-gray-100">
             <span className="mb-2">{session?.user?.email}</span>
+            {isMobile && userRole==="admin" && (
+              <>
+                <Link className="mb-1 hover:text-[orangered]" href="/dashboard">
+                  Dashboard
+                </Link>
+                <Link className="mb-2 hover:text-[orangered]" href="/issues">
+                  Issues
+                </Link>
+              </>
+            )}
             <button className="bg-[orangered] hover:bg-red-600 flex justify-center items-center text-white rounded px-2 py-1" onClick={handleLogout}>
           <FiLogOut color="white" size={20} className="mr-2"/>Log Out
             </button>

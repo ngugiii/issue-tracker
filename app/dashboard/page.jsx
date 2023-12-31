@@ -101,18 +101,18 @@ const page = () => {
           {Object.keys(groupedIssues).map((key) => (
             <div
               key={key}
-              className="flex border-2 rounded-lg mr-4 p-1 border-gray-400 flex-col justify-center items-center"
+              className="flex border-2 rounded-lg mr-4 p-1 text-center border-gray-400 flex-col justify-center items-center"
             >
               <span className="lowercase">{key} ISSUES</span>{" "}
               <span>{groupedIssues[key]}</span>
             </div>
           ))}
         </div>
-        <div className=" p-4 shadow-lg rounded-md">
+        <div className="p-4 shadow-lg rounded-md">
           <BarChart chartOptions={chartOptions} chartData={chartData} />
         </div>
       </div>
-      <div className="md:ml-8 md:w-[50%] w-full shadow-lg p-4 rounded-lg">
+      <div className="md:ml-8 md:mt-0 mt-12 md:w-[50%] w-full shadow-lg p-4 rounded-lg">
         <h1 className="md:text-xl md:font-semibold flex items-center mb-2 text-[orangered]">
           Latest Issues
           <span className=" font-normal text-sm text-black ml-1">
