@@ -15,7 +15,7 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [callbackUrl, setCallbackUrl] = useState("https://myissue-tracker.vercel.app/dashboard");
+  const [callbackUrl, setCallbackUrl] = useState("");
 
 
   useEffect(() => {
