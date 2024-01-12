@@ -15,7 +15,7 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [callbackUrl, setCallbackUrl] = useState("");
+  const [callbackUrl, setCallbackUrl] = useState("https://myissue-tracker.vercel.app/dashboard");
 
 
   useEffect(() => {
@@ -27,6 +27,7 @@ const Page = () => {
     setCallbackUrl(urlParams.get("callbackUrl"));
   }, [])
   
+  console.log(callbackUrl);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ const Page = () => {
         password,
         redirect: true,
         callbackUrl:
-          callbackUrl ||  "http://localhost:3001" || "https://myissue-tracker.vercel.app/dashboard",
+          callbackUrl ||  "http://localhost:3000/dashboard" || "https://myissue-tracker.vercel.app/dashboard",
       });
       if (res.status !== 200) {
         toast.error("Invalid Login Attempt");
