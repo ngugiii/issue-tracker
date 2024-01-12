@@ -29,6 +29,13 @@ const Page = () => {
   
   console.log(callbackUrl);
 
+  const getBaseUrl = () => {
+    // Check if the site is in development or production
+    return process.env.NODE_ENV === "development"
+      ? "http://localhost:3000" // Development URL
+      : "https://myissue-tracker.vercel.app"; // Production URL
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -37,8 +44,7 @@ const Page = () => {
         email,
         password,
         redirect: true,
-        callbackUrl:
-          callbackUrl ||  "http://localhost:3000/dashboard" || "https://myissue-tracker.vercel.app/dashboard",
+        callbackUrl: callbackUrl || getBaseUrl() + "/dashboard",
       });
       if (res.status !== 200) {
         toast.error("Invalid Login Attempt");
@@ -67,7 +73,10 @@ const Page = () => {
         }
       }
     } catch (error) {
-      toast.error("Error Logging In");
+      if(error.message !== "Cannot read properties of undefined (reading \'status\')"){
+        toast.error("Error Logging In");
+        setIsLoading(false);
+      }
       setIsLoading(false);
     }
   };
