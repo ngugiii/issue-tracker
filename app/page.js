@@ -16,20 +16,14 @@ const Page = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // const handleSubmit = async (e: any) => {
-  //   e.preventDefault();
-  //   try {
-  //     const { data } = await axios.post("/api/login", {
-  //       email,
-  //       password,
-  //     });
-  //     console.log(data);
-  //     toast.success("Login Successfull!");
-  //     router.push("/");
-  //   } catch (error) {
-  //     toast.error("Error Logging In");
-  //   }
-  // };
+  const path = window.location.href;
+  console.log(path);
+  const encodedUrl = path;
+  const decodedUrl = decodeURI(encodedUrl);
+  const parsedUrl = new URL(decodedUrl);
+  const urlParams = new URLSearchParams(parsedUrl.search);
+  const callbackUrl = urlParams.get("callbackUrl");
+  console.log(callbackUrl);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +32,9 @@ const Page = () => {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl:
+          callbackUrl ||  "http://localhost:3001" || "https://myissue-tracker.vercel.app/dashboard",
       });
       if (res.status !== 200) {
         toast.error("Invalid Login Attempt");
@@ -103,7 +99,8 @@ const Page = () => {
             </button>
             {/* <div className="bg-red-500 text-white w-fit text-sm rounded-md mt-2 p-1">Error Message</div> */}
             <Link className="text-sm" href={"/signup"}>
-              Don&apos;t have an account? <span className="underline">Register</span>
+              Don&apos;t have an account?{" "}
+              <span className="underline">Register</span>
             </Link>
           </form>
         </div>
