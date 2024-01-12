@@ -15,15 +15,18 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [callbackUrl, setCallbackUrl] = useState("");
 
-  const path = window.location.href;
-  console.log(path);
-  const encodedUrl = path;
-  const decodedUrl = decodeURI(encodedUrl);
-  const parsedUrl = new URL(decodedUrl);
-  const urlParams = new URLSearchParams(parsedUrl.search);
-  const callbackUrl = urlParams.get("callbackUrl");
-  console.log(callbackUrl);
+
+  useEffect(() => {
+    const path = window.location.href;
+    const encodedUrl = path;
+    const decodedUrl = decodeURI(encodedUrl);
+    const parsedUrl = new URL(decodedUrl);
+    const urlParams = new URLSearchParams(parsedUrl.search);
+    setCallbackUrl(urlParams.get("callbackUrl"));
+  }, [])
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
