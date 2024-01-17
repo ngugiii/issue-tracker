@@ -4,82 +4,65 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { getSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import Loader from "./components/loader/Loader";
 
-const Page = () => {
+
+const Page = ({searchParams}) => {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [callbackUrl, setCallbackUrl] = useState("");
 
 
-  useEffect(() => {
-    const path = window.location.href;
-    const encodedUrl = path;
-    const decodedUrl = decodeURI(encodedUrl);
-    const parsedUrl = new URL(decodedUrl);
-    const urlParams = new URLSearchParams(parsedUrl.search);
-    setCallbackUrl(urlParams.get("callbackUrl"));
-  }, [])
-  
-  console.log(callbackUrl);
-
-  const getBaseUrl = () => {
-    // Check if the site is in development or production
-    return process.env.NODE_ENV === "development"
-      ? "http://localhost:3000" // Development URL
-      : "https://myissue-tracker.vercel.app"; // Production URL
+  const determineCallbackUrl =() => {
+      if (email === "admin@gmail.com") {
+        return searchParams.callbackUrl ? searchParams.callbackUrl : getBaseUrl() + "/dashboard";
+      } else {
+        return searchParams.callbackUrl ? searchParams.callbackUrl : (id && (getBaseUrl() + `/user-issues/${id}`));
+      }
+    
   };
+  
+  const getBaseUrl = () => {
+    return process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://myissue-tracker.vercel.app";
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+  
     try {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: true,
-        callbackUrl: callbackUrl || getBaseUrl() + "/dashboard",
+        redirect: false,
       });
-      if (res.status !== 200) {
-        toast.error("Invalid Login Attempt");
+  
+      if (res?.error) {
+        console.error(res.error);
         setIsLoading(false);
       } else {
         const session = await getSession();
-        const user = session.user;
-        const accessToken = session.accessToken;
-        const refreshToken = session.refreshToken;
-        const decoded = jwtDecode(accessToken);
-        const userRole = decoded.role;
-        const userId = session.userId;
-        if (session) {
-          if (userRole === "admin") {
-            toast.success("Login Successfull!");
-            router.push("/dashboard");
-            setIsLoading(false);
-          } else if (userRole === "user") {
-            router.push(`/user-issues/${userId}`);
-            toast.success("Login Successfull!");
-            setIsLoading(false);
-          } else {
-            toast.error("Unauthorized");
-            setIsLoading(false);
-          }
-        }
+        console.log("Session after login:", session);
+        setId(session.userId)
+        setIsLoading(false);
+  
+        router.push(determineCallbackUrl());
       }
     } catch (error) {
-      if(error.message !== "Cannot read properties of undefined (reading \'status\')"){
-        toast.error("Error Logging In");
-        setIsLoading(false);
-      }
+      console.error(error);
       setIsLoading(false);
     }
   };
+  
   return (
     <>
       {isLoading && <Loader />}
