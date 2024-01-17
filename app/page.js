@@ -1,7 +1,6 @@
 "use client";
-import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -49,12 +48,13 @@ const Page = ({searchParams}) => {
       if (res?.error) {
         console.error(res.error);
         setIsLoading(false);
+        toast.error("Error Logging in");
       } else {
         const session = await getSession();
         console.log("Session after login:", session);
         setId(session.userId)
         setIsLoading(false);
-  
+        toast.success("Log in Succesful");  
         router.push(determineCallbackUrl());
       }
     } catch (error) {
