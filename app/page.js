@@ -54,17 +54,12 @@ const Page = ({searchParams}) => {
       } else {
         const session = await getSession();
         console.log("Session after login:", session);
-        setId(session.userId)
-        if(email === "admin@gmail.com"){
-          router.push("/dashboard");
-        }
-        else{
-          if(session){
-        setIsLoading(false);
-        router.push(`/user-issues/${session.userId}`);
+        if(session.user){
+          if(session.user.email == "admin@gmail.com"){
+        router.push("/dashboard");
           }
           else{
-            setIsLoading(true);
+        router.push(`/user-issues/${session.userId}`);
           }
         }
         setIsLoading(false);
