@@ -20,7 +20,7 @@ const Page = ({searchParams}) => {
 
   const determineCallbackUrl =() => {
       if (email === "admin@gmail.com") {
-        return searchParams.callbackUrl ? searchParams.callbackUrl : getBaseUrl() + "/dashboard";
+        return searchParams.callbackUrl ? searchParams.callbackUrl :(id && (getBaseUrl() + `/user-issues/${id}`));
       } else {
         return searchParams.callbackUrl ? searchParams.callbackUrl : (id && (getBaseUrl() + `/user-issues/${id}`));
       }
@@ -43,6 +43,8 @@ const Page = ({searchParams}) => {
         email,
         password,
         redirect: false,
+        // callbackUrl: determineCallbackUrl()
+
       });
   
       if (res?.error) {
@@ -53,9 +55,21 @@ const Page = ({searchParams}) => {
         const session = await getSession();
         console.log("Session after login:", session);
         setId(session.userId)
+        if(email === "admin@gmail.com"){
+          router.push("/dashboard");
+        }
+        else{
+          if(session){
+        setIsLoading(false);
+        router.push(`/user-issues/${session.userId}`);
+          }
+          else{
+            setIsLoading(true);
+          }
+        }
         setIsLoading(false);
         toast.success("Log in Succesful");  
-        router.push(determineCallbackUrl());
+        // router.push(determineCallbackUrl());
       }
     } catch (error) {
       console.error(error);
