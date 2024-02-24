@@ -55,8 +55,8 @@ const Page = () => {
             <Link href="/issues/new">New Issue</Link>
           </button>
         </div>
-        <div className="w-full">
-          <table className="w-full border border-gray-300">
+        <div className="w-full flex justify-center items-center">
+          <table className=" border border-gray-300">
             <thead className="bg-zinc-100 ">
               <tr className="border border-gray-300">
                 <th className="text-center p-2">Issue</th>
@@ -95,7 +95,7 @@ const Page = () => {
       </div>
     </ProtectedRoute>
     </>
-  );
-};
+  )
+}
 
 export default Page;

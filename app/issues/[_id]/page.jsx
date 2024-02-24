@@ -48,7 +48,6 @@ const Page = () => {
       [sessionId]: !prevState[sessionId] || false,
     }));
   };
-  console.log(id);
 
   const getIssueDetails = async () => {
     setIsLoading(true);
@@ -85,9 +84,6 @@ const Page = () => {
   useEffect(() => {
     getUserDetails();
   }, [issue]);
-
-  console.log(userDetails);
-
   const handleEditStatus = (IssueId) => {
     setSelectedIssueId(IssueId);
     setEditModalOpen(true);
@@ -145,21 +141,21 @@ const Page = () => {
     <>
       <ProtectedRoute>
         <div className="full md:p-10 p-4 flex md:flex-row flex-col">
-          <div className="issue-left md:space-y-4  md:w-[70%]">
+          <div className="issue-left md:space-y-4  md:w-[70%] w-full">
             {issue && (
-              <h1 className="text-2xl font-semibold font-serif">
+              <h1 className="text-2xl md:mb-0 mb-2 md:text-left text-center font-semibold font-serif">
                 {issue.title}
               </h1>
             )}
             {issue && (
-              <div className="space-x-4">
+              <div className="space-x-4 flex md:flex-row items-center flex-col">
                 <span
                   className={classNames({
                     "bg-red-100 text-red-600": issue.status === "OPEN",
                     "bg-purple-100 text-purple-800":
                       issue.status === "IN_PROGRESS",
                     "bg-green-100 text-green-800": issue.status === "CLOSED",
-                    "p-1 rounded lowercase": true,
+                    "p-1 rounded md:mb-0 mb-2 lowercase": true,
                   })}
                 >
                   {issue.status}
@@ -219,7 +215,7 @@ const Page = () => {
         {/* Edit Modal */}
         {editModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white md:w-[40%] p-12 rounded-md">
+            <div className="bg-white md:w-[40%] w-[80%] p-12 rounded-md">
               <h3 className="text-lg font-semibold mb-4 text-[orangered]">
                 Edit Statuses
               </h3>
