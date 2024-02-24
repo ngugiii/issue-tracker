@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 // import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { getSession, useSession } from "next-auth/react";
 import Loader from "../components/loader/Loader";
 
 const Page = () => {
@@ -25,7 +24,7 @@ const Page = () => {
       setIsLoading(false);
     }
     try {
-      const response = await axios.post("/api/register", {
+      const response = await axios.post("/api/auth/register", {
         userName,
         email,
         password,

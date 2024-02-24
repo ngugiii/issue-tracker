@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Loader from "../components/loader/Loader";
 import BarChart from "../components/charts/BarChart";
+import ProtectedRoute from "../components/protectedRoute/ProtectedRoute";
 
 const Page = () => {
   const [issues, setIssues] = useState([]);
@@ -95,6 +96,7 @@ const Page = () => {
   };
   return (
     <>
+    <ProtectedRoute>
     {isLoading && <Loader/>}
         <div className="md:px-24 px-4 flex md:flex-row flex-col w-full">
       <div className="w-full">
@@ -145,6 +147,7 @@ const Page = () => {
         )}
       </div>
     </div>
+    </ProtectedRoute>
     </>
   );
 };

@@ -1,77 +1,55 @@
-"use client";
+"use client"
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { getSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import Loader from "./components/loader/Loader";
+import axios from "axios";
 
-
-const Page = ({searchParams}) => {
+const Page = ({ searchParams }) => {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-
-  const determineCallbackUrl =() => {
-      if (email === "admin@gmail.com") {
-        return searchParams.callbackUrl ? searchParams.callbackUrl :(id && (getBaseUrl() + `/user-issues/${id}`));
-      } else {
-        return searchParams.callbackUrl ? searchParams.callbackUrl : (id && (getBaseUrl() + `/user-issues/${id}`));
-      }
-    
-  };
-  
-  const getBaseUrl = () => {
-    return process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://myissue-tracker.vercel.app";
-  };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     try {
-      const res = await signIn("credentials", {
+      const res = await axios.post("/api/auth/login", {
         email,
         password,
-        redirect: false,
-        // callbackUrl: determineCallbackUrl()
-
       });
-  
-      if (res?.error) {
-        console.error(res.error);
-        setIsLoading(false);
-        toast.error("Error Logging in");
-      } else {
-        const session = await getSession();
-        console.log("Session after login:", session);
-        if(session.user){
-          if(session.user.email == "admin@gmail.com"){
-        router.push("/dashboard");
-          }
-          else{
-        router.push(`/user-issues/${session.userId}`);
-          }
+      if (res.status == 200) {
+        const userRole = res?.data?.user.role;
+        const userEmail = res?.data?.user.email;
+        const id = res?.data?.user.id;
+        const accessToken = res?.data.accessToken;
+
+        sessionStorage.setItem("userRole", userRole);
+        sessionStorage.setItem("email", userEmail);
+        sessionStorage.setItem("id", id);
+        sessionStorage.setItem("accessToken", accessToken);
+
+        if (userRole == "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push(`user-issues/${id}`);
         }
-        setIsLoading(false);
-        toast.success("Log in Succesful");  
-        // router.push(determineCallbackUrl());
+      } else {
+        toast.error("Invalid Login Attempt");
       }
     } catch (error) {
       console.error(error);
-      setIsLoading(false);
+      toast.error("Invalid Login Attempt");
+    } finally {
+      setIsLoading(false); // Set loading state to false regardless of success or failure
     }
   };
-  
+
   return (
     <>
       {isLoading && <Loader />}

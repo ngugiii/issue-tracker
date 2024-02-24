@@ -9,6 +9,7 @@ import { FiEdit } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import ConfirmPopup from "@/app/components/confirmPopup/ConfirmPopup";
 import Loader from "@/app/components/loader/Loader";
+import ProtectedRoute from "@/app/components/protectedRoute/ProtectedRoute";
 
 const Page = () => {
   const [userIssues, setUserIssues] = useState(null);
@@ -79,7 +80,8 @@ const Page = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
+    <ProtectedRoute>
+    {isLoading && <Loader />}
       {filteredIssues && filteredIssues.length > 0 ? (
         <div className="w-full md:px-10 px-3 py-2">
           <div className="flex justify-start items-center mb-2">
@@ -255,6 +257,7 @@ const Page = () => {
           </div>
         </div>
       )}
+    </ProtectedRoute>
     </>
   );
 };

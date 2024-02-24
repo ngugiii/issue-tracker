@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import Loader from "../components/loader/Loader";
+import ProtectedRoute from "../components/protectedRoute/ProtectedRoute";
 
 const Page = () => {
   const [issues, setIssues] = useState([]);
@@ -35,7 +36,8 @@ const Page = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
+    <ProtectedRoute>
+    {isLoading && <Loader />}
       <div className="md:px-12 px-2 w-full space-y-6">
         <div className="flex justify-between items-center">
           <select
@@ -91,6 +93,7 @@ const Page = () => {
           </table>
         </div>
       </div>
+    </ProtectedRoute>
     </>
   );
 };

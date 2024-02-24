@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { AiFillBug } from "react-icons/ai";
 import classNames from "classnames";
 import { FaUserCircle } from "react-icons/fa";
-import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FiLogOut } from "react-icons/fi";
@@ -18,9 +17,6 @@ const Navbar = () => {
   const [userName, setUserName] = useState("");
   const router=useRouter();
   const currentPath = usePathname();
-
-  const {data: session}=useSession();
-  const userRole=session?.role;
 
 
   useEffect(() => {
@@ -37,13 +33,19 @@ const Navbar = () => {
     };
   }, []);
   
+  const email = typeof window !== 'undefined' ? sessionStorage.getItem("email") : null;
+  const userRole = typeof window !== 'undefined' ? sessionStorage.getItem("userRole") : null;
+  
 
-  if (session && userRole === "admin" && !isMobile) {
+  if (userRole === "admin" && !isMobile) {
     links.push(
       { id: 1, href: "/dashboard", name: "Dashboard" },
       { id: 2, href: "/issues", name: "Issues" }
     );
   }
+
+  const Links =[ { id: 1, href: "/dashboard", name: "Dashboard" },
+       { id: 2, href: "/issues", name: "Issues" }]
 
 
 
@@ -52,10 +54,8 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
     router.push('/');
     setOpenUserPopup(false);
-    setUserName("")
     toast.success("User Logged out");
     sessionStorage.clear();
   };
@@ -83,14 +83,14 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
-        {session && <FaUserCircle
+        {userRole && <FaUserCircle
           size={28}
           className="cursor-pointer"
           onClick={handlePopup}
         />}
         {openUserPopup && (
           <div className="absolute rounded border-2 p-2 top-[3.6rem] right-[1rem] flex flex-col bg-gray-100">
-            <span className="mb-2">{session?.user?.email}</span>
+            <span className="mb-2">{email}</span>
             {isMobile && userRole==="admin" && (
               <>
                 <Link className="mb-1 hover:text-[orangered]" href="/dashboard">

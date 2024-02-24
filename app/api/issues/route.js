@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod";
 import prisma from "@/prisma/client";
-import { middleware } from "@/middleware";
 
 
 const createIssueSchema = z.object({

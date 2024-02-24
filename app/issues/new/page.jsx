@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import Loader from "@/app/components/loader/Loader";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-
+import ProtectedRoute from "@/app/components/protectedRoute/ProtectedRoute";
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
@@ -32,31 +32,33 @@ const Page = () => {
   });
   return (
     <>
-      {isLoading && <Loader />}
-      <form className="max-w-xl space-y-3 flex flex-col" onSubmit={onSubmit}>
-        <input
-          type="text"
-          required
-          className="border outline-purple-600 rounded p-1"
-          placeholder="Title"
-          {...register("title")}
-        />
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <SimpleMDE
-              placeholder="Description"
-              id=""
-              className="border required outline-purple-600 rounded p-1"
-              {...field}
-            />
-          )}
-        />
-        <button className="bg-purple-600 md:w-[40%] hover:bg-purple-700 text-white px-2 py-1 rounded transition-colors">
-          Submit New Issue
-        </button>
-      </form>
+      <ProtectedRoute>
+        {isLoading && <Loader />}
+        <form className="max-w-xl space-y-3 flex flex-col" onSubmit={onSubmit}>
+          <input
+            type="text"
+            required
+            className="border outline-purple-600 rounded p-1"
+            placeholder="Title"
+            {...register("title")}
+          />
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <SimpleMDE
+                placeholder="Description"
+                id=""
+                className="border required outline-purple-600 rounded p-1"
+                {...field}
+              />
+            )}
+          />
+          <button className="bg-purple-600 md:w-[40%] hover:bg-purple-700 text-white px-2 py-1 rounded transition-colors">
+            Submit New Issue
+          </button>
+        </form>
+      </ProtectedRoute>
     </>
   );
 };

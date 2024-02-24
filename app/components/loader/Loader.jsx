@@ -6,7 +6,7 @@ const Loader = () => {
   return (
     <div className="fixed z-10 top-0 left-0 flex justify-center items-center w-full h-full bg-black bg-opacity-80">
       <div className="text-center">
-      <Image src="/loader.gif" alt="Loading..." className="w-12 h-12" width={3} height={3}/>
+      <Image src="/loader.gif" alt="Loading..." className="w-24 h-12" width={3} height={3}/>
       </div>
     </div>
   );
