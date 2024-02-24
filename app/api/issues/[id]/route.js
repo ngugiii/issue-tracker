@@ -65,9 +65,6 @@ export async function PUT(request, { params }) {
         assignedIssues: true,
       },
     })
-      
-      console.log(updatedUser);
-
     return NextResponse.json({ updatedIssue, updatedUser }, { status: 200 });
   } catch (error) {
     console.error(error);
